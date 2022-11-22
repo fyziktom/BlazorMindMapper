@@ -1,0 +1,13 @@
+﻿
+<PanzoomMermaid @ref="mermaidViewRef" />
+
+@code {
+
+    PanzoomMermaid? mermaidViewRef;
+
+    public async Task LoadMermaid(string mermaid)
+    {
+        if (mermaidViewRef != null && mermaid != null)
+            await mermaidViewRef.LoadText(mermaid);
+    }
+}

@@ -1,0 +1,111 @@
+﻿@page "/"
+
+@inject MindMapperService mindMapper
+
+<PageTitle>Index</PageTitle>
+
+<!--
+<MindMapMermaid @ref=mindMapRef />
+
+<PanzoomMermaid Text="@mindMapper.MermaidWrappedText(sequence)" />
+-->
+
+<MindMapper.MindMap.MindMap @ref=mindMapOwnRef />
+
+@code{
+    MindMapMermaid? mindMapRef;
+    MindMapper.MindMap.MindMap? mindMapOwnRef;
+
+    string sequence = "sequenceDiagram" +
+                      "\tA->>B: <a href=\"https://google.com/\" target=\"_blank\">google</a>";// +
+                      //"\tclick A \"https://google.com/\"";
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+
+        if (firstRender)
+        {
+            var mindmap = CreateMindMap();
+
+            mindMapper.GetMindMapFromTree(mindmap);
+            Console.WriteLine(mindMapper.MindMapMermaid);
+
+            if (mindMapOwnRef != null)
+                await mindMapOwnRef.Load();
+
+            if (mindMapRef != null)
+                await mindMapRef.LoadMermaid(mindMapper.MindMapMermaid);
+        }
+    }
+
+    private TreeItem CreateMindMap()
+    {
+        var item = new TreeItem()
+            {
+                Depth = 0,
+                Value = "ToDiscover",
+                Name = "root",
+                Icon = "::icon(fa fa-question)"
+            };
+
+        var marker1 = new TreeItem()
+            {
+                Name = "marker1",
+                Value = "dokumentace3dmodel",
+                Icon = "::icon(fa fa-question)"
+            };
+        item.AddChild(marker1);
+
+        marker1.AddChild(new TreeItem()
+            {
+                Value = "my_mame",
+                Icon = "::icon(fa fa-hashtag)"
+            });
+
+        var marker1ent1 = new TreeItem()
+            {
+                Value = "podklady",
+                Icon = "::icon(fa fa-at)"
+            };
+
+        marker1ent1.AddChild(new TreeItem()
+            {
+                Value = "3dmodel",
+                Icon = "::icon(fa fa-tags)"
+            });
+        marker1.AddChild(marker1ent1);
+
+
+        var marker2 = new TreeItem()
+            {
+                Name = "marker2",
+                Value = "dokumentaceVykres",
+                Icon = "::icon(fa fa-question)"
+            };
+        
+        marker2.AddChild(new TreeItem()
+            {
+                Value = "my_mame",
+                Icon = "::icon(fa fa-hashtag)"
+            });
+        
+        item.AddChild(marker2);
+
+        var marker2ent1 = new TreeItem()
+            {
+                Value = "podklady",
+                Icon = "::icon(fa fa-at)"
+            };
+
+        marker2ent1.AddChild(new TreeItem()
+            {
+                Value = "Vykres",
+                Icon = "::icon(fa fa-tags)"
+            });
+
+        marker2.AddChild(marker2ent1);
+
+        return item;
+    }
+}
